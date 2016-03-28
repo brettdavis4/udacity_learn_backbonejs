@@ -1,0 +1,48 @@
+label {
+       font-weight: normal;
+       margin-left: 5px;
+}
+
+button {
+       margin-top: 5px;
+}
+
+.exdiv {
+       font-size: x-small;
+}
+
+.closediv {
+    font-size: x-small;
+    float: right;
+    cursor: pointer;
+}
+
+.tableheader {
+    background-color: #808080;
+    color: #fff;
+}
+
+.Cardio{
+    font-size: x-small;
+    background-color: #ff8080;
+    padding: 5px;
+}
+
+.Strength{
+    font-size: x-small;
+    background-color: #80ff80;
+    padding: 5px;
+}
+
+.Core{
+    font-size: x-small;
+    background-color: #bf80ff;
+    padding: 5px;
+}
+
+.Hiit{
+    font-size: x-small;
+    background-color:  #ffff80;
+    padding: 5px;
+}
+

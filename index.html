@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interactive Food Guide</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" /> 
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />   
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    
+  </head>
+  <body>
+      <div class="container">
+          <h1>Interactive Food Guide</h1>
+          
+          <p><a href="#" id="loglink">Enter Food</a> | <a href="#" id="historylink">Food History</a></p>          
+          
+          <div id="logdiv">
+            <div id="menu">
+                <div>
+                    <input type="text" id="searchBox" style="width:500px;" placeholder="Search for food"> <br/><br/>
+                </div>
+                <ul id="listing"></ul>
+            </div>            
+            <div id="log">            
+               <h3>Breakfast</h3>
+                    <ul class="list-unstyled" id="breakfast"></ul>
+                    <h3>Lunch</h3>
+                <ul class="list-unstyled" id="lunch"></ul>
+                    <h3>Dinner</h3>
+                <ul class="list-unstyled" id="dinner"></ul>
+                    <h3>Snack</h3>
+                <ul class="list-unstyled" id="snack"></ul>
+                    
+                <h3>Totals for the day:</h3>
+                
+                <p id="totalcal"><strong>Total Calories:</strong>  <span>0</span></p>
+                <p id="totalprotein"><strong>Total Protein:</strong>  <span>0</span></p>
+                <p id="totalcarb"><strong>Total Carbohydrates:</strong>  <span>0</span></p>
+                <p id="totalfat"><strong>Total Fat:</strong>  <span>0</span></p>
+                <p id="totalsugar"><strong>Total Sugar:</strong>  <span>0</span></p>
+        
+                <h3>Save food data</h3>
+                <p>Date: <input type="text" id="datepicker"></p>
+                <button type="submit" class="btn btn-primary" id="savefoodday">Save food data</button>
+                
+             </div>
+          </div>
+          <div id="historydiv">
+              <script type="text/template" id="item-template">  
+                <% for(var model in models){ %>
+                  <div style="float:left;min-width:75%">
+                      <div style="float:left;">
+                          <h4>Totals for the day: <%= models[model].logdate %></h4>
+
+                            <p><strong>Total Calories:</strong>  <span><%= models[model].calories %></span></p>
+                            <p><strong>Total Protein:</strong>  <span><%= models[model].protein %></span></p>
+                            <p><strong>Total Carbohydrates:</strong>  <span><%= models[model].carbs %></span></p>
+                            <p><strong>Total Fat:</strong>  <span><%= models[model].fat %></span></p>
+                            <p><strong>Total Sugar:</strong>  <span><%= models[model].sugar %></span></p>
+
+                        </div>
+                        <div style="float:right;min-width: 50%;">
+                            <% var breakfastlist = ""; %>
+                            <% var lunchlist = ""; %>
+                            <% var dinnerlist = ""; %>
+                            <% var snacklist = ""; %>
+                            
+                            <% for(food in models[model].content) {                                 
+                                if (models[model].content[food].meal === 'Breakfast'){
+                                    breakfastlist += "<li>" + models[model].content[food].title + "</li>";
+                                } 
+                                
+                                if (models[model].content[food].meal === 'Lunch'){
+                                    lunchlist += "<li>" + models[model].content[food].title + "</li>";
+                                } 
+                                
+                                if (models[model].content[food].meal === 'Dinner'){
+                                   dinnerlist += "<li>" + models[model].content[food].title + "</li>";
+                                } 
+                                
+                                if (models[model].content[food].meal === 'Snack'){
+                                    snacklist += "<li>" + models[model].content[food].title + "</li>";
+                                } 
+                            } %>
+                            
+                            <h4>Breakfast</h4>
+                                 <ul><%= breakfastlist %></ul>
+                            <h4>Lunch</h4>
+                                 <ul><%= lunchlist %></ul>
+                            <h4>Dinner</h4>
+                                 <ul><%= dinnerlist %></ul>
+                            <h4>Snack</h4>
+                                 <ul><%= snacklist %></ul>
+                        </div>
+                        <div style="width: 100%;height: 5px;clear: both;">
+                            <hr>
+                        </div>                  
+                  </div>   
+              <% } %>
+              </script>
+          </div>
+
+         <!-- Modal -->
+         <div id="myModal" class="modal fade" role="dialog">
+                    
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="exampleModalLabel">Add a food entry</h4>
+                            </div>
+                            <div class="modal-body">
+                                <fieldset>
+                                <form id="mealForm" class="form-horizontal">
+                                    
+                                    <div class="form-group">
+                                        <label for="meal" class="control-label">Select Meal:</label>
+                                        <div class="selectContainer">
+                                        <select id="meal" name="meal" class="form-control" required="">
+                                            <option disabled="disabled" selected="selected" value="">Select</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                            <option value="Snack">Snack</option>
+                                        </select>
+                                        </div>    
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="message-text" class="control-label">Food:</label>
+                                        <div id="dfood"></div>
+                                    </div>
+                                </form>
+                                </fieldset>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" id="save" >Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+   
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+        //initialize jquery datepicker
+        $(function() {
+            $( "#datepicker").datepicker();
+        });
+        
+        //nav functions
+        $(document).ready(function() {
+            $("#loglink").click(function() {
+                $("#logdiv").css({"display":"block"});
+                $("#historydiv").css({"display":"none"});
+            });
+          
+            $("#historylink").click(function() {                
+                $("#logdiv").css({"display":"none"});
+                $("#historydiv").css({"display":"block"});
+            });
+        });
+    </script>
+
+    <!-- Backbone and Underscore -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="js/backbone.js"></script>
+    <script src="js/backbone.localStorage.js"></script>
+    <!-- apps functionality -->
+
+    <script src="js/views/app.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
